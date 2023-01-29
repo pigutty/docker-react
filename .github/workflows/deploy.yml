@@ -32,7 +32,7 @@ jobs:
       run: gcloud auth configure-docker us-docker.pkg.dev
 
     - name: Build Docker image
-      run: docker build -t ${{env.LOCAL_IMAGE}} -f Dockerfile .
+      run: docker build -t ${{env.LOCAL_IMAGE}} -f Dockerfile.dev .
 
     - name: tag 
       run: docker tag ${{env.LOCAL_IMAGE}} ${{env.LOCATION}}-docker.pkg.dev/${{secrets.PROJECT_ID}}/${{env.REPOSITORY}}/${{env.REMOTE_IMAGE}}
