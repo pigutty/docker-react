@@ -38,7 +38,7 @@ jobs:
       run: docker tag ${{env.IMAGE}} ${{env.LOCATION}}-docker.pkg.dev/${{secrets.PROJECT_ID}}/${{env.REPOSITORY}}/${{env.IMAGE}}
 
     - name: push
-      run: docker push ${{env.LOCATION}}-docker.pkg.dev/${{secrets.PROJECT-ID}}/${{env.REPOSITORY}}/${{env.IMAGE}}
+      run: docker push ${{env.LOCATION}}-docker.pkg.dev/${{secrets.PROJECT_ID}}/${{env.REPOSITORY}}/${{env.IMAGE}}
 
     - id: 'deploy'
       uses: 'google-github-actions/deploy-cloudrun@v1'
