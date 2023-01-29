@@ -30,7 +30,11 @@ jobs:
 
     - name: Build Docker image
       run: docker build -t ${{env.IMAGE}} -f Dockerfile.dev .
+
+    - name: tag 
       run: docker tag ${{env.IMAGE}} ${{env.LOCATION}}-docker.pkg.dev/${{secrets.PROJECT_ID}}/${{env.REPOSITORY}}/${{env.IMAGE}}
+
+    - name: push
       run: docker push ${{env.LOCATION}}-docker.pkg.dev/${{secrets.PROJECT-ID}}/${{env.REPOSITORY}}/${{env.IMAGE}}
 
     - id: 'deploy'
