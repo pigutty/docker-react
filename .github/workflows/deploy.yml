@@ -17,7 +17,7 @@ jobs:
     - uses: 'google-github-actions/auth@v1'
       with:
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
-        service_account: ${{ secrets.SERVICE_ACCOUNT }}
+        service_account: github-actions@${{ secrets.PROJECT_ID }}.iam.gserviceaccount.com
     
     - name: build image
     - run: docker build -t ${{env.IMAGE}} -f Dockerfile.dev .
