@@ -1,0 +1,32 @@
+name: Deploy Frontend
+on:
+  push:
+    branches:
+      - main
+env:
+  IMAGE: pigutty/react-test
+  LOCATION: us
+  REPOSITORY: my-container
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: 'google-github-actions/auth@v1'
+      with:
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+        service_account: ${{ secrets.SERVICE_ACCOUNT }}
+
+    - uses: 'actions/checkout@v3'
+    - run: docker build -t ${{env.IMAGE}} -f Dockerfile.dev .
+    - run: docker tag ${{env.IMAGE}} ${{env.LOCATION}}-docker.pkg.dev/${{secrets.PROJECT_ID}}/${{env.REPOSITORY}}/${{env.IMAGE}}
+    - run: docker push ${{env.LOCATION}}-docker.pkg.dev/${{secrets.PROJECT-ID}}/${{env.REPOSITORY}}/${{env.IMAGE}}
+
+    - id: 'deploy'
+      uses: 'google-github-actions/deploy-cloudrun@v1'
+      with:
+        service: 'mycloudrun'
+        image: ${{env.LOCATION}}-docker.pkg.dev/${{secrets.PROJECT_ID}}/${{env.REPOSITORY}}/{{env.IMAGE}}
+
+    - name: 'Use output'
+      run: 'curl "${{ steps.deploy.outputs.url }}"'
