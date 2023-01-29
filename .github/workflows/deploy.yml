@@ -4,7 +4,8 @@ on:
     branches:
       - main
 env:
-  IMAGE: pigutty/react-test
+  LOCAL_IMAGE: pigutty/react-test
+  REMOTE_IMAGE: react-test
   LOCATION: us
   REPOSITORY: my-container
 
@@ -32,19 +33,19 @@ jobs:
       run: gcloud auth configure-docker
 
     - name: Build Docker image
-      run: docker build -t ${{env.IMAGE}} -f Dockerfile.dev .
+      run: docker build -t ${{env.LOCAL_IMAGE}} -f Dockerfile.dev .
 
     - name: tag 
-      run: docker tag ${{env.IMAGE}} ${{env.LOCATION}}-docker.pkg.dev/${{secrets.PROJECT_ID}}/${{env.REPOSITORY}}/${{env.IMAGE}}
+      run: docker tag ${{env.LOCAL_IMAGE}} ${{env.LOCATION}}-docker.pkg.dev/${{secrets.PROJECT_ID}}/${{env.REPOSITORY}}/${{env.LOCAL_IMAGE}}
 
     - name: push
-      run: docker push ${{env.LOCATION}}-docker.pkg.dev/${{secrets.PROJECT_ID}}/${{env.REPOSITORY}}/${{env.IMAGE}}
+      run: docker push ${{env.LOCATION}}-docker.pkg.dev/${{secrets.PROJECT_ID}}/${{env.REPOSITORY}}/${{env.REMOTE_IMAGE}}
 
     - id: 'deploy'
       uses: 'google-github-actions/deploy-cloudrun@v1'
       with:
         service: 'mycloudrun'
-        image: ${{env.LOCATION}}-docker.pkg.dev/${{secrets.PROJECT_ID}}/${{env.REPOSITORY}}/{{env.IMAGE}}
+        image: ${{env.LOCATION}}-docker.pkg.dev/${{secrets.PROJECT_ID}}/${{env.REPOSITORY}}/{{env.REMOTE_IMAGE}}
 
     - name: 'Use output'
       run: 'curl "${{ steps.deploy.outputs.url }}"'
